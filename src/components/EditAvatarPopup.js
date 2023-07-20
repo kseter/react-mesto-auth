@@ -32,7 +32,7 @@ const EditAvatarPopup = ({isOpen, onClose, onUpdateAvatar}) => {
           onSubmit={handleAvatarSubmit}>
         <input 
           type="url" 
-          lassName="popup__form-item popup__form-item_avatar_link popup__input" 
+          className="popup__form-item popup__form-item_avatar_link popup__input" 
           value={avatar || ''} 
           onChange={handleAvatarChange}
           name="avatar"

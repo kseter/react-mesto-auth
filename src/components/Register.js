@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Register = ({onRegister, handleInfoTooltipOpen}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
     
     const handleEmailChange =(e)=> {
         setEmail(e.target.value);
@@ -17,12 +16,9 @@ const Register = ({onRegister, handleInfoTooltipOpen}) => {
     const handleRegisterSubmit =(e)=> {
         e.preventDefault();
         onRegister({email, password});
-        handleInfoTooltipOpen();
-        navigate('/sign-in');
     };
 
     return (
-
         <section className="enter-page">
             <h1 className='enter-page__title'>Регистрация</h1>
             <form className='enter-page__form'>

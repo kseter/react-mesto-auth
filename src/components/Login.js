@@ -17,7 +17,6 @@ const Login = ({onLogin}) => {
    const handleLoginSubmit =(e) => {
     e.preventDefault();
     onLogin({email, password });
-    navigate('/')
    };
 
     return (

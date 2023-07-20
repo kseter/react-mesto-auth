@@ -30,7 +30,7 @@ function App() {
 //login&registration states 
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [userEmail, setUserEmail] = useState('');
-	const [isSuccessInfoTooltipStatus, setIsSuccessInfoTooltipStatus] = useState()
+	const [isSuccessInfoTooltipStatus, setIsSuccessInfoTooltipStatus] = useState(false)
 	const [textInfoTooltip, setTextInfoTooltip] = useState('');
 	const navigate = useNavigate();
 	
@@ -52,24 +52,16 @@ function App() {
 //put updated data to user profile & load the cards
 	useEffect(() => {
 		if (loggedIn) {
-			Promise.all([
-				api.requestUserInfo()
-				.then((data) => {
-					setCurrentUser(data) 
-				})
-				.catch((err) => {
-					console.log(err);
-				}),
-				api.getInitialCards()
-				.then((cards) => {
+			Promise.all([api.requestUserInfo(), api.getInitialCards()])
+				.then(([user, cards]) => {
+					setCurrentUser(user) 
 					setCards(cards);
 				})
 				.catch((err) => {
 					console.log(err);
 				})
-			])
-		}
-	},[loggedIn]);
+			}
+		},[loggedIn]);
 
 	useEffect(() => {
 		const jwt = localStorage.getItem('jwt'); //get the token from the storage 
@@ -154,8 +146,6 @@ function App() {
 		api.changeAvatar(avatar)
 		.then((data) => {
 			setCurrentUser(data);
-		})
-		.then(() => {
 			closeAllPopups();
 		})
 		.catch((err) => {
@@ -167,8 +157,6 @@ function App() {
 		api.addNewCard(card)
 		.then((newCard)=> {
 			setCards([newCard, ...cards]); 
-		})
-		.then(() => {
 			closeAllPopups();
 		})
 		.catch((err) => {
@@ -183,6 +171,7 @@ function App() {
 				setLoggedIn(true);
 				localStorage.setItem('jwt', res.token);
 				setUserEmail(email);
+				navigate('/')
 			}
 		})	
 		 .catch((err) => {
@@ -195,7 +184,9 @@ function App() {
 		.then(() => { 
 			setIsSuccessInfoTooltipStatus(true)
 			setTextInfoTooltip('Вы успешно зарегистрировались!'); //change state for infotooltip text type
-			}
+			openInfoTooltip();
+			navigate('/sign-in');
+		}
 		)
 		.catch(() => {
 			setIsSuccessInfoTooltipStatus(false)
