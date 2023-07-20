@@ -7,32 +7,34 @@ export const register = (email, password) => {
          {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify ({
-            'email': email, 
-            'password': password
-        })
+        body: JSON.stringify({email, password})
     })
-    // .then((response) => {
-    //     return response.json();
-    // })
-}
+    .then((res) => {
+        if (res.ok) {
+            return res.json()
+        } else if (res.status === 400) {
+            throw new Error(`${res.status} - некорректно заполнено одно из полей `);
+        } 
+    })
+};
 
-export const login =(email, password) => {
+export const login = (email, password) => {
     return fetch (`${BASE_URL}/signin`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(
-            {
-                'password': password,
-                'email': email
-            } 
-        )
+        body: JSON.stringify({email, password})
     })
-    // .then((response) => {
-    //     return response.json();
-    // })
+    .then((res) => {
+        if(res.ok) {
+            return res.json();
+        } else if (res.status === 400) {
+            throw new Error(`${res.status} - не передано одно из полей`);
+        } else if (res.status === 401) {
+            throw new Error(`${res.status} - пользователь с email не найден`);
+        } 
+    })
     // .then((data) => {
     //     if(data.token){
     //         localStorage.setItem('jwt', data.token)
@@ -41,9 +43,9 @@ export const login =(email, password) => {
     //         return
     //     }
     // })
-}
+};
 
-export const getContent = (token) => {
+export const checkToken = (token) => {
     return fetch (`${BASE_URL}/users/me`, {
         method: 'GET', 
         headers: {
@@ -51,8 +53,15 @@ export const getContent = (token) => {
             "Authorization" : `Bearer ${token}`,
         }
     })
-    .then((response) => {
-        return response.json();
-    }).then(data => data)
-}
+    .then((res) => {
+        if (res.ok) {
+            return res.json()
+        } else if (res.status === 400) {
+            throw new Error(`${res.status} — Токен не передан или передан не в том формате`);
+        } else if (res.status === 401) {
+            throw new Error(`${res.status} - — Переданный токен некорректен`);
+        } 
+    })
+    .then(data => data);
+};
 
